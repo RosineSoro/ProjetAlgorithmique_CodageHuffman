@@ -1,1 +1,1 @@
-# ProjetAlgorithmique_Projet1
+# ProjetAlgorithmique_CodageHuffman

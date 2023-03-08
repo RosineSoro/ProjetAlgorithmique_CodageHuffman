@@ -1,97 +1,115 @@
-#1 Dermination de lalphabet et des frequences des caracteres
-
 import pandas as pd
 
-def alphabet_non_reduit (file_name):
+
+
+#1 Dermination de lalphabet et des frequences des caracteres
+
+def getText (file_name):
     '''
-    determination de l'alphabet à partir d'un fichier txt
-    pour le moment, pas de majuscules autorisées dans le fichier
+      Retourne le texte contenu dans le fichier entre en parametre sous forme de liste. 
+      Chaque element de cette liste est un caractre du texte.
+      Possibilite d avoir des repetitions au niveau des elements si dans le texte le characteres sont utilises plusieurs fois
     '''
     
-    with open(file_name,'r',encoding="UTF-8") as fichier :
+    with open(file_name + ".txt",'r',encoding="UTF-8") as fichier :
         Lignes = fichier.readlines()
-    #Lignes = []
-    #for ligne in lignes :
-        #Lignes.append(ligne.strip()) ça supprime les tabulations, donc à éviter
-    alphabet_non_reduit = []
+
+    texte = []
     for i in range (len(Lignes)):
         for char in Lignes[i]:
-                alphabet_non_reduit.append(char)
-    #alphabet_non_reduit = str(alphabet_non_reduit).lower()
-    return alphabet_non_reduit
+                texte.append(char)
+    fichier.close()
 
-
-def frequence(file_name):
-    liste = alphabet_non_reduit(file_name)
-    frequence = dict(pd.Series(liste).value_counts())
-    return frequence
+    return texte
+    
 
 def alphabet (file_name):
-    '''pb: lalphabet change chaque fois quon lance le code'''
-    alphabet = list(set(alphabet_non_reduit(file_name)))
+    '''
+    retourne l alphabet utilisé pour écrire le texte contenu dans le fichier entre en parametre
+    '''
+    #pb: lalphabet change chaque fois quon lance le code
+    alphabet = list(set(getText(file_name)))
     return alphabet 
 
-def alphabet_final(file_name):
-    new_alphabet_final = {}
-    dico_frequence = frequence(file_name)
-    alphabet_final = dict(sorted(dico_frequence.items(), key=lambda t: t[1]))
 
-    liste_occur =[]
-    for occur in alphabet_final.values():
-        liste_occur.append (occur)
-    liste_occur = list(set(liste_occur))
-
-    liste_char =[]
-    liste_occur_2 = []
-    for val in (liste_occur):
-        for char,occurenc in alphabet_final.items():
-            if occurenc == val :
-                liste_char.append(char)
-                liste_occur_2.append(occurenc)
-
-        for i in sorted(liste_char):
-            for j in liste_occur_2 :
-                new_alphabet_final[i] = j
-                break
-
-        liste_occur_2 = []
-        liste_char = []
-                  
-    #return '\n' + str(new_alphabet_final) + '\n'
-    return new_alphabet_final
-
-def display(file_name):
-    dico = alphabet_final(file_name)
-    #print(str(dico))
-    print(len(dico))
-    for k,v in dico.items():
-             print(k,v) #pk ça retourne None?
-
-             #new_file = open(file_name + "_freq.txt", "w" ,encoding="UTF-8")
-             #new_file.write(display(filename))
-             #new_file.close()
-        
+def frequence(texte):
+     '''
+     Prend en paramètre un texte en forme de liste de caractere où chaque caractere est extrait d un texte.
+     Permet de compter l occurence de chaque caractere dans le texte
+     Retourne une liste de tuple constituee de deux elements : le 1er -> le charactere et le 2e -> l occurrence du charactere
+     La frequence est retournee par ordre decroissant. Pour avoir la frequence par ordre croissante, voir fonction triFreq
+     '''
+     
+     liste_frequence = []
+     frequence = dict(pd.Series(texte).value_counts())
+     for char, occur in frequence.items():
+          liste_frequence.append((char,occur))
+     return liste_frequence
 
 
 
-#fileName = 'alice.txt'
-fileName = 'texteemma.txt'
-# fileName = 'extraitalice.txt'
-# fileName = 'textesimple.txt'
+def triFreq(myList):
+        ''' Permet de trier une liste de tuple. 
+        Le tuple etant constitue de 2 elements (le 1er est le caractere et le 2eme l occurence du caractere dans le texte ou il est extrait) 
+        Retourne une liste triee de facon croissante en fonction de l occurence puis en fonction du code ASCII si deux caracteres ont la meme occurence
+        '''
+        list_length = len(myList)
+        for i in range(0, list_length):
+            for j in range(0, list_length-i-1):  
+                if (myList[j][1] > myList[j + 1][1] or myList[j][1] == myList[j + 1][1] and myList[j][0] > myList[j + 1][0]):  
+                    temp = myList[j]  
+                    myList[j]= myList[j + 1]  
+                    myList[j + 1]= temp  
+        return myList
 
-#clsprint(alphabet_non_reduit (fileName))
-#print(alphabet (fileName))
-#print(frequence(fileName))
-print(alphabet_final(fileName))
-print(display(fileName))
-#print(sorted(['a','d','c','b']))
-#print(set([1,2,2,3,9,3,8]))
-l = [0,1,4]
-#for i in l:
-     #l.remove(i)
-l.remove(0)
-l.remove(4)
-#print(l)  
+def save_frequence(liste_tri,file_name):
+        '''
+        Cree un fichier qui sauvegarde la frequence (occurence) de chaque caractere
+        La fonction ecrase le fichier s il existe deja et en cree un nouveau.
+        Il en cree un nouveau si le fichier n existe pas encore.
+        Renvoie un message de confirmation quand le fichier est cree.
+        '''
+     
+        new_file = open(file_name + "_freq.txt", "w" ,encoding="UTF-8")
+        new_file.write(str(len(liste_tri))+ '\n')
+        for tuple in liste_tri:
+              new_file.write(tuple [0] + "  " + str(tuple[1]) + '\n')
+        new_file.close()
+        return ("Fichier créé avec succès")
+
+
+
+#### Tests ####
+
+
+# Avant de tester une fonction sur un fichier, il faut se placer dans le dossier contenant ce fichier texte (le dossier qui a pour nom le nom du fichier)
+# Puis, il faut choisir parmi les fileName suivant en fonction du dossier où vous vous placerez
+#Pour un affichage complet du début à la fin, après avoir realiser les deux # du haut, tout lancer à partir de l etape5
+
+# Nom des fichiers pour les tester 
+fileName = 'texteperso'
+#fileName = 'textesimple'
+#fileName = 'alice'
+#fileName = 'extraitalice'
+#fileName = 'bonjour'
+
+#Affichage du texte et de l alphabet
+print("\n", "texte : ", getText(fileName), "\n")
+print("alphabet :",alphabet(fileName), "\n")
+
+#Affichage des frequences
+texte = getText(fileName) 
+print("frequence : ", frequence(texte), "\n")
+
+#Affichage des frequences triees
+freq = frequence(texte)
+print ("frequence triee : ", triFreq(freq), "\n")
+
+#Sauvegarde des frequences
+liste_freq_triees = triFreq(freq)
+print(save_frequence(liste_freq_triees,fileName), "\n")
+
+
 
 
 

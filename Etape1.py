@@ -87,8 +87,8 @@ def save_frequence(liste_tri,file_name):
 #Pour un affichage complet du début à la fin, après avoir realiser les deux # du haut, tout lancer à partir de l etape5
 
 # Nom des fichiers pour les tester 
-fileName = 'texteperso'
-#fileName = 'textesimple'
+
+fileName = 'textesimple'
 #fileName = 'alice'
 #fileName = 'extraitalice'
 #fileName = 'bonjour'

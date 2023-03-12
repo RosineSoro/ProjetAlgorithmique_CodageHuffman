@@ -37,8 +37,8 @@ def codeFinal(liste_char,liste_code_char):
 
     #Pour recuperer les caracteres du texte, je fais appel a la fonction getText de letape 1
     #Pour les codes des caractères, je fais appel à la fonction codeChar de l etape 3
-    #liste_char = getText(file_name)
-    #liste_code_char = codeChar(root,code,liste)
+    
+    
     code_final = ''
 
     #Je parcours la liste_char avec des indices pour pouvoir remplacer les caracteres par leur code
